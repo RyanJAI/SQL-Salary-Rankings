@@ -1,0 +1,30 @@
+-- ==========================================
+-- EXAMPLE 2: Employee Salary Rankings
+-- ==========================================
+
+CREATE TABLE Employees (
+    emp_id INT PRIMARY KEY,
+    name VARCHAR(100),
+    department VARCHAR(50),
+    salary DECIMAL(10,2),
+    hire_date DATE
+);
+
+INSERT INTO Employees VALUES 
+(1, 'John', 'IT', 75000, '2020-01-15'),
+(2, 'Sarah', 'IT', 85000, '2019-03-10'),
+(3, 'Mike', 'HR', 65000, '2021-06-20'),
+(4, 'Lisa', 'HR', 68000, '2020-11-01'),
+(5, 'Tom', 'IT', 90000, '2018-07-30');
+
+-- Query with multiple window functions
+SELECT 
+    department,
+    name,
+    salary,
+    RANK() OVER (PARTITION BY department ORDER BY salary DESC) as salary_rank,
+    DENSE_RANK() OVER (PARTITION BY department ORDER BY salary DESC) as dense_rank,
+    ROUND(AVG(salary) OVER (PARTITION BY department), 2) as dept_avg_salary,
+    ROUND(salary - AVG(salary) OVER (PARTITION BY department), 2) as diff_from_dept_avg
+FROM Employees
+ORDER BY department, salary DESC;
